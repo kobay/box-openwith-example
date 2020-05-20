@@ -62,7 +62,7 @@
         });
         const optionsJRes = await optionsRes.json();
 
-        const subscribe = async (streamPosition = 0) => {
+        const subscribe = async (streamPosition = "now") => {
             // リアルタイムサーバーに対してロングポーリングを行う
             // CORSエラーを避けるる設定で行う
             console.log(`requesting ${optionsJRes.entries[0].url}`);
@@ -103,7 +103,7 @@
             })
 
             // Update されていることがわかったのでPreviewを更新
-            if(updated) {
+            if(updated || streamPosition === "now") {
                 // previewだけを描画し直す。
                 preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
                 // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
