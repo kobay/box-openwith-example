@@ -91,16 +91,8 @@
             });
             const getJRes = await getRes.json();
 
-            console.log("getJRes", getJRes)
-            // 対象のFileIDが更新されているかチェック
-            // 日付もチェックしようとおもったが、どうも帰ってくる更新日付が怪しいので今回はチェックしない
-            // const updated = getJRes.entries.some(event => {
-            //     return event.event_type === "ITEM_UPLOAD"
-            //         && event.source
-            //         && event.source.type === "file"
-            //         && event.source.id === fileId
-            // })
-
+            console.log("getJRes", getJRes);
+            /*
             // 複数もどってくるイベントを、対象ファイルの更新のもので、最新のものに絞る
             const latestEvent = getJRes.entries.reduce((acc, cur) => {
                 if(cur.event_type === "ITEM_UPLOAD"
@@ -129,17 +121,11 @@
                 preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
                 // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
                 preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
-            }
-
-            // Update されていることがわかったのでPreviewを更新
-            // if(updated || streamPosition === "now") {
-            //     // previewだけを描画し直す。
-            //     preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
-            //     // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
-            //     preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
-            // }
-
-            // console.log("getJRes", getJRes)
+            } */
+            // previewだけを描画し直す。
+            preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
+            // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
+            preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
 
             await subscribe(getJRes.next_stream_position)
         }
