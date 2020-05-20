@@ -13,9 +13,6 @@
     <script src="https://cdn01.boxcdn.net/platform/elements/11.0.2/ja-JP/openwith.js"></script>
     <script src="https://cdn01.boxcdn.net/platform/preview/2.34.0/ja-JP/preview.js"></script>
 
-    <!-- axiosを導入 -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <style>
         .openwith-container {
             margin-left: 250px;
@@ -97,12 +94,12 @@
             console.log("getJRes", getJRes)
             // 対象のFileIDが更新されているかチェック
             // 日付もチェックしようとおもったが、どうも帰ってくる更新日付が怪しいので今回はチェックしない
-            const updated = getJRes.entries.some(event => {
-                return event.event_type === "ITEM_UPLOAD"
-                    && event.source
-                    && event.source.type === "file"
-                    && event.source.id === fileId
-            })
+            // const updated = getJRes.entries.some(event => {
+            //     return event.event_type === "ITEM_UPLOAD"
+            //         && event.source
+            //         && event.source.type === "file"
+            //         && event.source.id === fileId
+            // })
 
             // 複数もどってくるイベントを、対象ファイルの更新のもので、最新のものに絞る
             const latestEvent = getJRes.entries.reduce((acc, cur) => {
@@ -110,14 +107,15 @@
                     && cur.source
                     && cur.source.type === "file"
                     && cur.source.id === fileId) {
-                    if(acc && acc.sequence_id < cur.sequence_id) {
+                    if(!acc) {
                         return cur;
-                    } else {
-                        return acc;
                     }
+                    return (cur.sequence_id > acc.sequence_id) ? cur : acc;
                 }
-            })
-
+                return null;
+            }, null)
+            console.log("lastSequenceId", lastSequenceId);
+            console.log("latestEvent", latestEvent);
             // 前回処理したイベントより先に行ってるときだけリロードする
             if(latestEvent && latestEvent.sequence_id > lastSequenceId) {
 
