@@ -47,10 +47,30 @@
     preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
 
 
-    // openWithが開いたら反応
 
-    openWith.addListener("execute", (arg) => {
-        console.log("openWith execute", arg)
+
+    openWith.addListener("execute", async () => {
+        // openWithが開かれたので、ロングポーリング開始
+
+        const axiosInstance = axios.create({
+            baseURL: "https://api.box.com/2.0",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const res = await axiosInstance.options("/events")
+        console.log("res", res)
+        let data;
+        res.on('data', (chunk) => {
+            data += chunk.toString('utf8');
+        }).on('end', () => {
+            // callback(data);
+            console.log("on end", data)
+        }).on('error', (err) => {
+            console.error("error", err);
+        });
+        console.log("openWith execute", arguments)
     })
 
 
