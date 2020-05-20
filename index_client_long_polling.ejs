@@ -65,6 +65,7 @@
         const subscribe = async (streamPosition = "now") => {
             // リアルタイムサーバーに対してロングポーリングを行う
             // CORSエラーを避けるる設定で行う
+            console.log(`requesting ${optionsJRes.entries[0].url}`);
             let rtsRes = await fetch(optionsJRes.entries[0].url, {
                 method: "GET",
                 mode: "no-cors",
@@ -79,8 +80,9 @@
 
             //　何かのイベントが発生したので、EventAPIをGETで叩き、詳細情報を取り出す
             const qs = new URLSearchParams();
-            qs.set("event_type", "ITEM_UPLOAD");
+            qs.set("event_type", "ITEM_UPLOAD"); // 更新だけに絞る
             qs.set("stream_position", streamPosition); // 初回は"now", 2回め以降はnext_stream_positionが入る
+            console.log(`requesting https://api.box.com/2.0/events?${qs.toString()}`);
             const getRes = await fetch(`https://api.box.com/2.0/events?${qs.toString()}`, {
                 method: "GET",
                 headers: {
@@ -90,6 +92,7 @@
             });
             const getJRes = await getRes.json();
 
+            console.log("getJRes", getJRes)
             // 対象のFileIDが更新されているかチェック
             // 日付もチェックしようとおもったが、どうも帰ってくる更新日付が怪しいので今回はチェックしない
             const updated = getJRes.entries.some(event => {
