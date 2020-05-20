@@ -62,7 +62,7 @@
         });
         const optionsJRes = await optionsRes.json();
 
-        const subscribe = async (streamPosition = "now") => {
+        const subscribe = async (streamPosition = 0) => {
             // リアルタイムサーバーに対してロングポーリングを行う
             // CORSエラーを避けるる設定で行う
             console.log(`requesting ${optionsJRes.entries[0].url}`);
