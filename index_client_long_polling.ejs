@@ -34,13 +34,13 @@
 
 <script>
     // app.jsから渡されたパラメータ
-    window.fileId = "<%= fileId %>"
-    window.token = "<%= token %>"
+    const fileId = "<%= fileId %>"
+    const token = "<%= token %>"
 
     const openWith = new Box.ContentOpenWith();
     openWith.show(fileId, token,  { container: ".openwith-container"})
 
-    window.preview = new Box.Preview();
+    let preview = new Box.Preview();
     preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
 
 
@@ -57,7 +57,7 @@
         });
         const optionsJRes = await optionsRes.json();
 
-        let lastSequenceId = 0;
+        let lastSequenceId = 0; // 最後のSequenceID
         const subscribe = async (streamPosition = "now") => {
             // リアルタイムサーバーに対してロングポーリングを行う
             // CORSエラーを避けるため、シンプルなリクエストを使う
@@ -72,8 +72,10 @@
             // ロングポーリングからはtype: "opaque"というのが帰ってくるのだけど、、よくわからない・・・。
             // とはいえ、応答が帰ってくると、何かのイベントが発生したことはわかる。
             // console.log("rtServer res", rtsRes)
-
-            //　何かのイベントが発生したので、EventAPIをGETで叩き、詳細情報を取り出す
+            　
+            // 何かのイベントが発生したので、EventAPIをGETで叩き、詳細情報を取り出す。
+            // 上のロングポーリングだけに反応して再描画すると、再描画のプレビューイベントを拾ってしまい、
+            // 無限ループしてしまうので、イベントを更新に絞って確認する必要がある。
             const qs = new URLSearchParams();
             qs.set("event_type", "ITEM_UPLOAD"); // 更新だけに絞る。
             qs.set("stream_type", "sync");
