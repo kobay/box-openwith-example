@@ -71,11 +71,8 @@
         });
         const optionsJRes = await optionsRes.json();
 
-        const qs = new URLSearchParams({
-            event_type: "ITEM_UPLOAD"
-            // stream_type: "changes"
-        })
-        const subscribe = async (count = 0) => {
+
+        const subscribe = async (streamPosition = "now", count = 0) => {
             console.log(`subscribe start count=${count}`)
 
             let rtsRes = await fetch(optionsJRes.entries[0].url, {
@@ -88,6 +85,11 @@
             console.log("rtServer res", rtsRes)
 
             // eventを正式に取りに行く
+            const qs = new URLSearchParams({
+                event_type: "ITEM_UPLOAD",
+                stream_position: streamPosition
+                // stream_type: "changes"
+            })
             const getRes = await fetch(`https://api.box.com/2.0/events?${qs}`, {
                 method: "GET",
                 headers: {
@@ -102,13 +104,15 @@
                 // 同じファイルか
                 if(e.event_type === "ITEM_UPLOAD" && e.source && e.source.type === "file" && e.source.id === fileId){
                     console.log(++fileCount, e)
+                } else {
+                    console.log(e.event_type)
                 }
             })
 
 
             console.log("getJRes", getJRes)
 
-            await subscribe(++count)
+            await subscribe(getJRes.next_stream_position, ++count)
         }
         await subscribe();
     })
