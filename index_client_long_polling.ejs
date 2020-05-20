@@ -85,12 +85,12 @@
             console.log("rtServer res", rtsRes)
 
             // eventを正式に取りに行く
-            const qs = new URLSearchParams({
-                event_type: "ITEM_UPLOAD",
-                stream_position: streamPosition
-                // stream_type: "changes"
-            })
-            const getRes = await fetch(`https://api.box.com/2.0/events?${qs}`, {
+            const qs = new URLSearchParams();
+            qs.set("event_type", "ITEM_UPLOAD");
+            qs.set("stream_position", streamPosition);
+
+            console.log("qs", qs)
+            const getRes = await fetch(`https://api.box.com/2.0/events?${qs.toString()}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8",
