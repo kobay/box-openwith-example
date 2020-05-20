@@ -44,12 +44,10 @@
     preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
 
 
-
-
     openWith.addListener("execute", async () => {
         // openWithが開かれたので、ロングポーリング開始
 
-        // リアルタイムサーバー取得
+        // リアルタイムサーバーのURLを取得
         const optionsRes = await fetch("https://api.box.com/2.0/events", {
             method: "OPTIONS",
             headers: {
@@ -72,16 +70,16 @@
                 }
             })
 
-            // ロングポーリングからはtype: "opaque"というのが帰ってくるのだけど、、よくわからない。。
+            // ロングポーリングからはtype: "opaque"というのが帰ってくるのだけど、、よくわからない・・・。
             // とはいえ、応答が帰ってくると、何かのイベントが発生したことはわかる。
-            console.log("rtServer res", rtsRes)
+            // console.log("rtServer res", rtsRes)
 
             //　何かのイベントが発生したので、EventAPIをGETで叩き、詳細情報を取り出す
             const qs = new URLSearchParams();
-            qs.set("event_type", "ITEM_UPLOAD"); // 更新だけに絞る
+            qs.set("event_type", "ITEM_UPLOAD"); // 更新だけに絞る。
             qs.set("stream_type", "sync");
             qs.set("stream_position", streamPosition); // 初回は"now", 2回め以降はnext_stream_positionが入る
-            console.log(`requesting https://api.box.com/2.0/events?${qs.toString()}`);
+
             const getRes = await fetch(`https://api.box.com/2.0/events?${qs.toString()}`, {
                 method: "GET",
                 headers: {
@@ -90,8 +88,6 @@
                 }
             });
             const getJRes = await getRes.json();
-
-            console.log("getJRes", getJRes);
 
             // 複数もどってくるイベントを、対象ファイルの更新のもので、最新のものに絞る
             const latestEvent = getJRes.entries.reduce((acc, cur) => {
@@ -106,10 +102,10 @@
                 }
                 return null;
             }, null)
-            console.log("lastSequenceId", lastSequenceId);
-            console.log("latestEvent", latestEvent);
 
-            // 前回処理したイベントより先に行ってるときだけリロードする
+            // 前回処理したイベントより進んでいるときだけリロードする
+            // 初回にstreamPosition === "now"でイベントを取得すると、イベントが何も帰ってこない。
+            // 対象のファイルの更新イベントじゃないかもしれないけどリフレッシュかける。ここはもうちょっとうまくやれそうな気もする。
             if(streamPosition === "now" || latestEvent && latestEvent.source.sequence_id > lastSequenceId) {
 
                 //　今回処理するイベントのsequence_idを保存
@@ -118,12 +114,14 @@
                 }
 
                 // previewだけを描画し直す。
-                preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
+                preview = new Box.Preview();
                 // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
                 preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
             }
+            // 次のイベントへ
             await subscribe(getJRes.next_stream_position)
         }
+        // イベントの購読開始
         await subscribe();
     })
 
