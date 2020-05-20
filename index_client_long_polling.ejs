@@ -116,12 +116,13 @@
             }, null)
             console.log("lastSequenceId", lastSequenceId);
             console.log("latestEvent", latestEvent);
+
             // 前回処理したイベントより先に行ってるときだけリロードする
-            if(lastSequenceId === 0 || latestEvent && latestEvent.sequence_id > lastSequenceId) {
+            if(lastSequenceId === 0 || latestEvent && latestEvent.source.sequence_id > lastSequenceId) {
 
                 //　今回処理するイベントのsequence_idを保存
                 if(latestEvent) {
-                    lastSequenceId = latestEvent.sequence_id;
+                    lastSequenceId = latestEvent.source.sequence_id;
                 }
 
                 // previewだけを描画し直す。
