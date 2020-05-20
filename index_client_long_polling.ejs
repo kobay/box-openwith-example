@@ -81,6 +81,7 @@
             //　何かのイベントが発生したので、EventAPIをGETで叩き、詳細情報を取り出す
             const qs = new URLSearchParams();
             qs.set("event_type", "ITEM_UPLOAD"); // 更新だけに絞る
+            qs.set("stream_type", "changes");
             qs.set("stream_position", streamPosition); // 初回は"now", 2回め以降はnext_stream_positionが入る
             console.log(`requesting https://api.box.com/2.0/events?${qs.toString()}`);
             const getRes = await fetch(`https://api.box.com/2.0/events?${qs.toString()}`, {
