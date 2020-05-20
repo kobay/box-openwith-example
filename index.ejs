@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8" />
+    <title>Sample</title>
+
+    <link href="https://cdn01.boxcdn.net/platform/elements/11.0.2/ja-JP/openwith.css" rel="stylesheet" type="text/css"></link>
+    <link href="https://cdn01.boxcdn.net/platform/preview/2.34.0/ja-JP/preview.css" rel="stylesheet" type="text/css"></link>
+
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6,Intl"></script>
+    <script src="https://cdn01.boxcdn.net/polyfills/core-js/2.5.3/core.min.js"></script>
+
+    <script src="https://cdn01.boxcdn.net/platform/elements/11.0.2/ja-JP/openwith.js"></script>
+    <script src="https://cdn01.boxcdn.net/platform/preview/2.34.0/ja-JP/preview.js"></script>
+
+    <style>
+        .openwith-container {
+            margin-left: 250px;
+        }
+        .preview-container {
+            height: 800px;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+<h3>File Id: <%= fileId %></h3>
+
+<div id="container">
+    <div class="openwith-container"></div>
+    <div class="preview-container"></div>
+</div>
+
+<script>
+    // app.jsから渡されたパラメータ
+    window.fileId = "<%= fileId %>"
+    window.token = "<%= token %>"
+
+    const openWith = new Box.ContentOpenWith();
+    openWith.show(fileId, token,  { container: ".openwith-container"})
+
+    window.preview = new Box.Preview();
+    preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
+
+</script>
+</body>
+</html>
