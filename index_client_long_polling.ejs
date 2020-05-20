@@ -72,8 +72,8 @@
         const optionsJRes = await optionsRes.json();
 
         const qs = new URLSearchParams({
-            event_type: "ITEM_UPLOAD",
-            stream_type: "changes"
+            event_type: "ITEM_UPLOAD"
+            // stream_type: "changes"
         })
         const subscribe = async (count = 0) => {
             console.log(`subscribe start count=${count}`)
