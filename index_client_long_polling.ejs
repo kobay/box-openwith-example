@@ -92,7 +92,7 @@
             const getJRes = await getRes.json();
 
             console.log("getJRes", getJRes);
-            /*
+
             // 複数もどってくるイベントを、対象ファイルの更新のもので、最新のものに絞る
             const latestEvent = getJRes.entries.reduce((acc, cur) => {
                 if(cur.event_type === "ITEM_UPLOAD"
@@ -110,7 +110,7 @@
             console.log("latestEvent", latestEvent);
 
             // 前回処理したイベントより先に行ってるときだけリロードする
-            if(lastSequenceId === 0 || latestEvent && latestEvent.source.sequence_id > lastSequenceId) {
+            if(streamPosition === "now" || latestEvent && latestEvent.source.sequence_id > lastSequenceId) {
 
                 //　今回処理するイベントのsequence_idを保存
                 if(latestEvent) {
@@ -121,12 +121,7 @@
                 preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
                 // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
                 preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
-            } */
-            // previewだけを描画し直す。
-            preview = new Box.Preview(); // preivewオブジェクトは再利用できないっぽい。再度newする必要があるみたい。
-            // 毎回プレビューの位置までスクロールされたくないのでautoFocus:false
-            preview.show(fileId, token, { container: ".preview-container", autoFocus: false });
-
+            }
             await subscribe(getJRes.next_stream_position)
         }
         await subscribe();
