@@ -71,6 +71,10 @@
         });
         const optionsJRes = await optionsRes.json();
 
+        const qs = new URLSearchParams({
+            event_type: "ITEM_UPLOAD",
+            stream_type: "changes"
+        })
         const subscribe = async (count = 0) => {
             console.log(`subscribe start count=${count}`)
 
@@ -84,7 +88,7 @@
             console.log("rtServer res", rtsRes)
 
             // eventを正式に取りに行く
-            const getRes = await fetch("https://api.box.com/2.0/events", {
+            const getRes = await fetch(`https://api.box.com/2.0/events?${qs}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8",
@@ -92,6 +96,11 @@
                 }
             });
             const getJRes = await getRes.json();
+
+            getJRes.entries.forEach(e => {
+                console.log(e);
+            })
+
 
             console.log("getJRes", getJRes)
 
