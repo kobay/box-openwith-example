@@ -67,7 +67,7 @@
 
         const subscribe = async (count = 0) => {
             console.log("subscribe start")
-            let res = await axiosInstance.get(rtServer.url)
+            let res = await axiosInstance.options(rtServer.url)
             console.log("rtServer res", res)
             if(count < rtServer.max_retries) {
                 await subscribe()
