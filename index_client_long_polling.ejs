@@ -97,8 +97,12 @@
             });
             const getJRes = await getRes.json();
 
+            let fileCount = 0;
             getJRes.entries.forEach(e => {
-                console.log(e);
+                // 同じファイルか
+                if(e.event_type === "ITEM_UPLOAD" && e.source && e.source.type === "file" && e.source.id === fileId){
+                    console.log(++fileCount, e)
+                }
             })
 
 
