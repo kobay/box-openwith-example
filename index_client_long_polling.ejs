@@ -60,8 +60,7 @@
         let lastSequenceId = 0;
         const subscribe = async (streamPosition = "now") => {
             // リアルタイムサーバーに対してロングポーリングを行う
-            // CORSエラーを避けるる設定で行う
-            console.log(`requesting ${optionsJRes.entries[0].url}`);
+            // CORSエラーを避けるため、シンプルなリクエストを使う
             let rtsRes = await fetch(optionsJRes.entries[0].url, {
                 method: "GET",
                 mode: "no-cors",
