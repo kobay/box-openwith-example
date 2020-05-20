@@ -66,19 +66,19 @@
         const rtServer = eventRes.data.entries[0];
 
         const subscribe = async (count = 0) => {
-            console.log("subscribe start")
+            console.log(`subscribe start count=${count}`)
             // let res = await axiosInstance.options(rtServer.url)
 
             let res = await fetch(rtServer.url, {
                 method: "GET",
                 mode: "no-cors",
                 headers: {
-                    "Content-Type": "text/plain"
+                    "Content-Type": "application/x-www-form-urlencoded"
                 }
             })
             console.log("rtServer res", res)
-            if(count < rtServer.max_retries) {
-                await subscribe()
+            if(count < rtServer.max_retries + 5) {
+                await subscribe(++count)
             }
         }
         await subscribe();
