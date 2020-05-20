@@ -16,9 +16,10 @@ const FILE_ID = "665319803554";
 
 app.get("/", async (req, res) => {
   try {
-    const sdk = await boxSDK.getPreconfiguredInstance(config);
+    console.log("config", config);
+    const sdk = boxSDK.getPreconfiguredInstance(config);
     // AppUserの権限でClientオブジェクトを作成
-    const auClient = await sdk.getAppAuthClient("user", USER_ID);
+    const auClient = sdk.getAppAuthClient("user", USER_ID);
 
     // トークンをダウンスコープする
     // APIリファレンスには載っていないが、UI Elementsの説明には書いてあるAPI
