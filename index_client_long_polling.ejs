@@ -62,33 +62,40 @@
 
         // リアルタイムサーバー取得
         // const eventRes = await axiosInstance.options("/events")
-        const eventRes = await fetch("https://api.box.com/2.0/events", {
+        const optionsRes = await fetch("https://api.box.com/2.0/events", {
             method: "OPTIONS",
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
                 "Authorization": `Bearer ${token}`,
             }
-        })
-        console.log("eventRes", eventRes);
-        console.log("eventRes.body", eventRes.body);
-        console.log("eventRes.data.entries", eventRes.data.entries);
-        const rtServer = eventRes.data.entries[0];
+        });
+        const optionsJRes = await optionsRes.json();
 
         const subscribe = async (count = 0) => {
             console.log(`subscribe start count=${count}`)
-            // let res = await axiosInstance.options(rtServer.url)
 
-            let res = await fetch(rtServer.url, {
+            let rtsRes = await fetch(optionsJRes.entries[0].url, {
                 method: "GET",
                 mode: "no-cors",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 }
             })
-            console.log("rtServer res", res)
-            if(count < rtServer.max_retries + 5) {
-                await subscribe(++count)
-            }
+            console.log("rtServer res", rtsRes)
+
+            // eventを正式に取りに行く
+            const getRes = await fetch("https://api.box.com/2.0/events", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": `Bearer ${token}`,
+                }
+            });
+            const getJRes = await getRes.json();
+
+            console.log("getJRes", getJRes)
+
+            await subscribe(++count)
         }
         await subscribe();
     })
