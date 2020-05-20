@@ -61,7 +61,14 @@
         window.axiosInstance = axiosInstance;
 
         // リアルタイムサーバー取得
-        const eventRes = await axiosInstance.options("/events")
+        // const eventRes = await axiosInstance.options("/events")
+        const eventRes = await fetch("https://api.box.com/2.0/events", {
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        console.log("eventRes.body", eventRes.body);
         console.log("eventRes.data.entries", eventRes.data.entries);
         const rtServer = eventRes.data.entries[0];
 
