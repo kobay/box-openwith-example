@@ -58,19 +58,22 @@
                 Authorization: `Bearer ${token}`,
             },
         });
+        window.axiosInstance = axiosInstance;
 
-        const res = await axiosInstance.options("/events")
-        console.log("res", res)
-        let data;
-        res.on('data', (chunk) => {
-            data += chunk.toString('utf8');
-        }).on('end', () => {
-            // callback(data);
-            console.log("on end", data)
-        }).on('error', (err) => {
-            console.error("error", err);
-        });
-        console.log("openWith execute", arguments)
+        // リアルタイムサーバー取得
+        const eventRes = await axiosInstance.options("/events")
+        console.log("eventRes.data.entries", eventRes.data.entries);
+        const rtServer = eventRes.data.entries[0];
+
+        const subscribe = async (count = 0) => {
+            console.log("subscribe start")
+            let res = await axiosInstance.get(rtServer.url)
+            console.log("rtServer res", res)
+            if(count < rtServer.max_retries) {
+                await subscribe()
+            }
+        }
+        await subscribe();
     })
 
 
